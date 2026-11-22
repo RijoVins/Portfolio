@@ -1,0 +1,196 @@
+@import "tailwindcss";
+
+/* ───────────── Design system ───────────── */
+@theme {
+  --color-void: #050506;
+  --color-ink: #0b0b0d;
+  --color-coal: #131316;
+  --color-smoke: #1c1c21;
+  --color-ash: #2a2a31;
+  --color-bone: #f3f1ee;
+  --color-mute: #a7a7b0;
+  --color-dim: #74747e;
+  --color-ember: #c1121f;
+  --color-ember-hi: #e5383b;
+  --color-blood: #5c0a12;
+
+  --font-display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --ease-cine: cubic-bezier(0.22, 1, 0.36, 1);
+  --shadow-card: 0 30px 60px -20px rgb(0 0 0 / 0.75), 0 0 0 1px rgb(255 255 255 / 0.06);
+  --shadow-glow: 0 0 0 1px rgb(193 18 31 / 0.5), 0 20px 60px -10px rgb(193 18 31 / 0.45);
+}
+
+@layer base {
+  html {
+    background: var(--color-void);
+    color-scheme: dark;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background: var(--color-void);
+    color: var(--color-bone);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--color-ember); color: white; }
+  :focus-visible {
+    outline: 2px solid var(--color-ember-hi);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  section[id] { scroll-margin-top: 72px; }
+}
+
+/* Lenis */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+@layer components {
+  /* Eyebrow / kicker label */
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--color-mute);
+  }
+  .display {
+    font-family: var(--font-display);
+    font-weight: 900;
+    text-transform: uppercase;
+    line-height: 0.88;
+    letter-spacing: 0.01em;
+  }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.55rem;
+    min-height: 46px; padding: 0 1.35rem; border-radius: 6px;
+    font-weight: 700; font-size: 0.95rem;
+    transition: background-color .25s var(--ease-cine), color .25s, box-shadow .3s, transform .3s var(--ease-cine);
+    will-change: transform;
+  }
+  .btn-primary { background: var(--color-bone); color: var(--color-void); }
+  .btn-primary:hover { background: white; box-shadow: 0 10px 40px -8px rgb(255 255 255 / .35); }
+  .btn-ember { background: var(--color-ember); color: white; }
+  .btn-ember:hover { background: var(--color-ember-hi); box-shadow: var(--shadow-glow); }
+  .btn-ghost {
+    background: rgb(255 255 255 / 0.08); color: var(--color-bone);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12);
+    backdrop-filter: blur(8px);
+  }
+  .btn-ghost:hover { background: rgb(255 255 255 / 0.16); }
+  .chip {
+    display: inline-flex; align-items: center; gap: .35rem;
+    padding: .28rem .6rem; border-radius: 4px;
+    font-family: var(--font-mono); font-size: .7rem; letter-spacing: .04em;
+    background: rgb(255 255 255 / .06); color: var(--color-mute);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / .08);
+  }
+  .glass {
+    background: rgb(19 19 22 / 0.62);
+    backdrop-filter: blur(14px) saturate(140%);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.07);
+  }
+  .rail {
+    display: flex; gap: 1rem; overflow-x: auto; overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory; scrollbar-width: none;
+    padding: 1.25rem 1rem 2rem; margin: 0 -1rem;
+    scroll-padding-inline: 1rem;
+  }
+  .rail::-webkit-scrollbar { display: none; }
+  .rail > * { scroll-snap-align: start; flex: none; }
+  @media (min-width: 768px) {
+    .rail { padding-inline: 2.5rem; margin-inline: -2.5rem; scroll-padding-inline: 2.5rem; }
+  }
+}
+
+/* Film grain overlay */
+.grain {
+  pointer-events: none; position: fixed; inset: -50%; z-index: 60; opacity: .07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 1.2s steps(6) infinite;
+}
+@keyframes grain {
+  0%,100% { transform: translate(0,0) } 20% { transform: translate(-3%,2%) }
+  40% { transform: translate(2%,-3%) } 60% { transform: translate(-2%,-1%) } 80% { transform: translate(3%,3%) }
+}
+
+/* Light streak */
+.streak {
+  position: absolute; height: 1px; width: 40%;
+  background: linear-gradient(90deg, transparent, rgb(229 56 59 / .9), transparent);
+  filter: drop-shadow(0 0 6px rgb(229 56 59 / .8));
+  animation: streak 7s var(--ease-cine) infinite;
+  opacity: 0;
+}
+@keyframes streak {
+  0% { transform: translateX(-120%); opacity: 0 } 10% { opacity: .9 }
+  45% { transform: translateX(320%); opacity: 0 } 100% { transform: translateX(320%); opacity: 0 }
+}
+
+@keyframes float-y { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-10px) } }
+.float { animation: float-y 6s ease-in-out infinite; }
+
+/* ───────────── Hero portrait (transparent cutout) ───────────── */
+/* Dissolve the cropped bottom and the side edges where the suit meets the frame. */
+.portrait-fade {
+  --fade-from: 58%; --fade-to: 97%; --side: 10%;
+  -webkit-mask-image: linear-gradient(to bottom, #000 var(--fade-from), transparent var(--fade-to)), linear-gradient(to right, transparent 0%, #000 var(--side), #000 calc(100% - var(--side)), transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to bottom, #000 var(--fade-from), transparent var(--fade-to)), linear-gradient(to right, transparent 0%, #000 var(--side), #000 calc(100% - var(--side)), transparent 100%);
+  mask-composite: intersect;
+}
+
+/*
+ * Portrait anchor. Phones/tablets: a flex child filling the top band.
+ * Desktop: sized from the hero's height and pushed below the bottom edge, so the
+ * frame shows head-to-chest — a film-still crop. The fade ends where the hero ends.
+ *   --x   horizontal centre of the subject (% of hero width)
+ *   --top where the image box starts (% of hero height)
+ *   --h   image height (% of hero height); >100% = lower suit runs off-frame
+ */
+.portrait-anchor { position: relative; height: 100%; }
+@media (min-width: 1024px) {
+  .portrait-anchor {
+    --x: 80%; --top: 13%; --h: 100%;
+    position: absolute; left: var(--x); top: var(--top); height: var(--h);
+    transform: translateX(-50.5%);
+  }
+  .portrait-anchor .portrait-fade { --fade-from: 56%; --fade-to: 86%; --side: 30%; }
+}
+@media (min-width: 1280px) {
+  .portrait-anchor { --x: 74.5%; --top: 9%; --h: 122%; }
+  .portrait-anchor .portrait-fade { --fade-from: 50%; --fade-to: 76%; --side: 22%; }
+}
+@media (min-width: 1680px) {
+  .portrait-anchor { --x: 72%; --top: 8%; --h: 128%; }
+  .portrait-anchor .portrait-fade { --fade-from: 47%; --fade-to: 73%; --side: 18%; }
+}
+/* Restrained rim light from behind-right + soft ember spill. Follows the silhouette, not a box. */
+.portrait-rim {
+  filter: drop-shadow(2px -1px 1px rgb(229 56 59 / 0.32)) drop-shadow(0 0 30px rgb(193 18 31 / 0.12)) contrast(1.03);
+}
+@keyframes portrait-drift { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+@keyframes glow-breathe {
+  0%,100% { opacity: .75; transform: translate(-50%, -50%) scale(1) }
+  50% { opacity: 1; transform: translate(-48%, -52%) scale(1.06) }
+}
+.portrait-glow { transform: translate(-50%, -50%); animation: glow-breathe 10s ease-in-out infinite; }
+@media (min-width: 768px) {
+  .portrait-drift { animation: portrait-drift 9s ease-in-out infinite; }
+}
+@media (max-width: 767px) {
+  /* lighter filter on phones */
+  .portrait-rim { filter: drop-shadow(1px -1px 1px rgb(229 56 59 / 0.28)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain, .streak, .float, .portrait-drift, .portrait-glow { animation: none !important; }
+  .streak { display: none; }
+  *, *::before, *::after { transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
